@@ -1,6 +1,17 @@
 import math
 
-def tf_idf(word: str, tokens: list[str], documents: list[list[str]]) -> float:
+def tf_idf(documents: list[list[str]]) -> list[list[float]]:
+    """Calculate the tf-idf scores for all words in all documents.
+
+    Args:
+        documents (list[list[str]]): The list of documents.
+
+    Returns:
+        list[list[float]]: The tf-idf scores for all words in all documents.
+    """
+    return [[tf_idf_core(word, tokens, documents) for word in tokens] for tokens in documents]
+
+def tf_idf_core(word: str, tokens: list[str], documents: list[list[str]]) -> float:
     """Calculate the tf-idf score for a word in a document.
 
     Args:
