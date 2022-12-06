@@ -1,3 +1,4 @@
+# run from the project root directory
 from vectorize import tf_idf
 import unittest
 from unittest import TestCase
