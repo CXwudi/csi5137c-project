@@ -12,6 +12,8 @@ def preprocessing_df(raw_dataset: pd.DataFrame) -> pd.DataFrame:
     """
     core_part = raw_dataset.iloc[:, 0:10]
     comments = raw_dataset.iloc[:, 10:]
-    print("core part is {}".format(core_part))
-    print("comments are {}".format(comments))
+    reduced_dataset = core_part.copy(deep=True)
+    reduced_dataset["comments"] = comments.apply(lambda x: list(x.dropna()), axis=1)
+    print(reduced_dataset)
+    return reduced_dataset
     

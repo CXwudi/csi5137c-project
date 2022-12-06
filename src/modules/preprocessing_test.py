@@ -8,7 +8,10 @@ class TestTfIdf(TestCase):
   def test_df(self):
     # run this file from the project root directory
     df = pd.read_csv('data/authors_dataset.csv')
-    preprocessing_df(df)
+    reduced_dataset = preprocessing_df(df)
+    for row in reduced_dataset["comments"]:
+      if row != []:
+        print(row)
 
 if __name__ == '__main__':
   print(__package__)
