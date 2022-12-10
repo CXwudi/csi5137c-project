@@ -28,7 +28,10 @@ def proprocessing_text(dataset: pd.DataFrame) -> pd.DataFrame:
   Returns:
       pd.DataFrame: The tokenized preprocessed dataset.
   """
-  return None # TODO
+  dataset["title"] = dataset["title"].apply(_core_preprocessing_and_tokenizing)
+  dataset["selftext"] = dataset["selftext"].apply(_core_preprocessing_and_tokenizing)
+  dataset["comments"] = dataset["comments"].apply(lambda x: [_core_preprocessing_and_tokenizing(c) for c in x])
+  return dataset
 
 from spellchecker import SpellChecker
 spell_checker = SpellChecker()
@@ -48,6 +51,7 @@ only_words_tokenizer = RegexpTokenizer(r"\w+")
 
 def _core_preprocessing_and_tokenizing(text: str) -> list:
   """Preprocesses and tokenizes the text.
+  DO NOT modify the order of each preprocessing step.
 
   Args:
       text (str): The text to preprocess and tokenize.
@@ -55,6 +59,8 @@ def _core_preprocessing_and_tokenizing(text: str) -> list:
   Returns:
       list: The tokenized text.
   """
+  if (text is None or text == "" or text == "NaN"):
+    return []
   t1 = text.strip().lower()
   # remove URLs
   t2 = url_pattern.sub(r'', t1)

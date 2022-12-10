@@ -2,7 +2,7 @@
 import unittest
 from unittest import TestCase
 import pandas as pd
-from preprocessing import preprocessing_df, _core_preprocessing_and_tokenizing
+from preprocessing import preprocessing_df, _core_preprocessing_and_tokenizing, proprocessing_text
 
 class TestTfIdf(TestCase):
   def test_df(self):
@@ -22,8 +22,19 @@ class TestTfIdf(TestCase):
       "The eps are only 13minutes each- it should'nt be too hard to check for this. The bad color is my camera in a dark room, not the show.https://preview.redd.it/e1a4az4tibu31.jpg?width=4032&format=pjpg&auto=webp&s=01f64223b7e728910f2d8a48409cbcf1c848d110"
     ]
     for example in examples:
-      print(example)
-      print(_core_preprocessing_and_tokenizing(example))
+      # print(example)
+      # print(_core_preprocessing_and_tokenizing(example))
+      return
+
+  def test_some_tokenization2(self):
+    example_dataset = pd.DataFrame({
+      "title": ["weekly project done"],
+      "selftext": ["deep dark fantacy"],
+      "comments": [["oh yeah, I love it", "it's so good"]]
+    })
+    print(example_dataset)
+    preprocessed_dataset = proprocessing_text(example_dataset)
+    print(preprocessed_dataset)
 
 if __name__ == '__main__':
   print(__package__)
