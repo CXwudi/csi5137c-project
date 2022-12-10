@@ -16,11 +16,13 @@ class TestTfIdf(TestCase):
 
   def test_some_tokenization(self):
     examples = [
-      "Monster of a weekly project done 😅",
+      "Monster of a weekly project done 🤷‍♀️",
       "[other] when the customer wants the color to be \"\"clearer\"\"",
-      "IMPORTANT USER UPDATE - Adobe is Giving Away The Creative Cloud For Free Due to Corona Virus"
+      "IMPORTANT USER UPDATE - Adobe is Giving Away The Creative Cloud For Free Due to Corona Virus",
+      "The eps are only 13minutes each- it should'nt be too hard to check for this. The bad color is my camera in a dark room, not the show.https://preview.redd.it/e1a4az4tibu31.jpg?width=4032&format=pjpg&auto=webp&s=01f64223b7e728910f2d8a48409cbcf1c848d110"
     ]
     for example in examples:
+      print(example)
       print(_core_preprocessing_and_tokenizing(example))
 
 if __name__ == '__main__':

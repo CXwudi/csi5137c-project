@@ -1,5 +1,7 @@
+import string
 from nltk import word_tokenize
 import pandas as pd
+import re
 
 def preprocessing_df(raw_dataset: pd.DataFrame) -> pd.DataFrame:
   """Preprocesses the raw dataset.
@@ -13,7 +15,7 @@ def preprocessing_df(raw_dataset: pd.DataFrame) -> pd.DataFrame:
   core_part = raw_dataset.iloc[:, 0:10]
   comments = raw_dataset.iloc[:, 10:]
   reduced_dataset = core_part.copy(deep=True)
-  reduced_dataset["comments"] = comments.apply(lambda x: list(x.dropna()), axis=1)
+  reduced_dataset["comments"] = comments.agg(lambda x: list(x.dropna()), axis=1)
   # print(reduced_dataset)
   return reduced_dataset
 
@@ -38,6 +40,11 @@ nltk.download('wordnet')
 nltk.download('omw-1.4')
 from nltk.corpus import stopwords
 english_stop_words = set(stopwords.words('english'))
+url_pattern = re.compile(r'https?://\S+|www\.\S+')
+import emoji
+from nltk.tokenize import RegexpTokenizer
+only_words_tokenizer = RegexpTokenizer(r"\w+")
+
 
 def _core_preprocessing_and_tokenizing(text: str) -> list:
   """Preprocesses and tokenizes the text.
@@ -49,18 +56,24 @@ def _core_preprocessing_and_tokenizing(text: str) -> list:
       list: The tokenized text.
   """
   t1 = text.strip().lower()
-  token = word_tokenize(t1)
   # remove URLs
-  # remove punctuation
-  # remove other notations, emojis
+  t2 = url_pattern.sub(r'', t1)
+  # remove emojis
+  t3 = emoji.replace_emoji(t2, "")
+  # tokenize
+  token2 = word_tokenize(t3)
   # do correction
-  token2 = [spell_checker.correction(t) for t in token]
+  token3 = [spell_checker.correction(t) for t in token2]
   # lemmaization
-  token3 = _lemmaization(token2)
+  token4 = _lemmaization(token3)
+  # remove punctuation
+  token5 = [t for t in token4 if t not in string.punctuation]
+  # remove other notations
+  token6 = only_words_tokenizer.tokenize(" ".join(token5))
   # remove common words
-  token4 = [t for t in token3 if t not in english_stop_words]
+  token7 = [t for t in token6 if t not in english_stop_words]
 
-  final_token = token4
+  final_token = token7
   return final_token
 
 
@@ -78,5 +91,17 @@ def _lemmaization(token: list[str]) -> list[str]:
       list[str]: The lemmatized token.
   """
   pos_tagged_token = pos_tag(token)
-  lemmaized_token = [lemmatizer.lemmatize(t[0], pos=t[1]) for t in pos_tagged_token]
+#   print(pos_tagged_token)
+  lemmaized_token=[]
+  for t in pos_tagged_token:
+    if t[1].startswith('NN'):
+      lemmaized_token.append(lemmatizer.lemmatize(t[0], pos='n'))
+    elif t[1].startswith('VB'):
+      lemmaized_token.append(lemmatizer.lemmatize(t[0], pos='v'))
+    elif t[1].startswith('JJ'):
+      lemmaized_token.append(lemmatizer.lemmatize(t[0], pos='a'))
+    elif t[1].startswith('R'):
+      lemmaized_token.append(lemmatizer.lemmatize(t[0], pos='r'))
+    else:
+      lemmaized_token.append(lemmatizer.lemmatize(t[0]))
   return lemmaized_token
