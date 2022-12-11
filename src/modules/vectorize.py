@@ -59,8 +59,14 @@ def serise_to_BoW_dataframe(documents: pd.Series, scores: pd.Series, column_pref
   df = pd.DataFrame(columns=unique_words)
   # then fill the dataframe with the scores
   for i, tokens in enumerate(documents):
-    for j, token in enumerate(tokens):
-      df.at[i, column_prefix + token] = scores[i][j]
+    if (len(tokens) != len(scores[i])):
+      raise ValueError("The number of tokens in the document must be the same as the number of scores."
+        + f" {len(tokens)} != {len(scores[i])}")
+    if (len(tokens) == 0):
+      df.loc[i] = 0
+    else:
+      for j, token in enumerate(tokens):
+        df.at[i, column_prefix + token] = scores[i][j]
   # then fill the rest of the dataframe with zeros
   df = df.fillna(0)
   return df

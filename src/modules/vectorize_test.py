@@ -18,6 +18,7 @@ class TestTfIdf(TestCase):
   def test_bow(self):
     documents = pd.Series([
       ["this", "is", "a", "test"],
+      [],
       ["this", "is", "another", "test"],
       ["and", "yet", "another", "one"],
       ["so", "we", "have", "four", "documents"],
