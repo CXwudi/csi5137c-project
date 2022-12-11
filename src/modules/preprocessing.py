@@ -33,9 +33,9 @@ def proprocessing_text(dataset: pd.DataFrame) -> pd.DataFrame:
   dataset["comments"] = dataset["comments"].apply(lambda x: [_core_preprocessing_and_tokenizing(c) for c in x])
   return dataset
 
-from spellchecker import SpellChecker
-spell_checker = SpellChecker()
+
 import nltk
+import math
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
@@ -49,7 +49,7 @@ from nltk.tokenize import RegexpTokenizer
 only_words_tokenizer = RegexpTokenizer(r"\w+")
 
 
-def _core_preprocessing_and_tokenizing(text: str) -> list:
+def _core_preprocessing_and_tokenizing(text: str | float) -> list:
   """Preprocesses and tokenizes the text.
   DO NOT modify the order of each preprocessing step.
 
@@ -59,9 +59,11 @@ def _core_preprocessing_and_tokenizing(text: str) -> list:
   Returns:
       list: The tokenized text.
   """
-  if (text is None or text == "" or text == "NaN"):
-    return []
+  text = str(text) # convert to float
+  # print(text)
   t1 = text.strip().lower()
+  if (t1 is None or t1 == "" or t1.lower() == "nan"):
+    return []
   # remove URLs
   t2 = url_pattern.sub(r'', t1)
   # remove emojis
@@ -69,7 +71,7 @@ def _core_preprocessing_and_tokenizing(text: str) -> list:
   # tokenize
   token2 = word_tokenize(t3)
   # do correction
-  token3 = [spell_checker.correction(t) for t in token2]
+  token3 = [_spell_correction(t) for t in token2]
   # lemmaization
   token4 = _lemmaization(token3)
   # remove punctuation
@@ -82,10 +84,31 @@ def _core_preprocessing_and_tokenizing(text: str) -> list:
   final_token = token7
   return final_token
 
+spell_correction_cache = {}
+from spellchecker import SpellChecker
+spell_checker = SpellChecker()
+
+def _spell_correction(word: str) -> str:
+  """Corrects the spelling of the word.
+
+  Args:
+      word (str): The word to correct.
+
+  Returns:
+      str: The corrected word.
+  """
+  if (word in spell_correction_cache):
+    return spell_correction_cache[word]
+  else:
+    corr_opt = spell_checker.correction(word)
+    corr = word if (corr_opt is None) else corr_opt
+    spell_correction_cache[word] = corr
+    return corr
 
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
 lemmatizer = WordNetLemmatizer()
+only_words_pattern = re.compile(r"\w+")
 
 def _lemmaization(token: list[str]) -> list[str]:
   """Lemmatizes the token.
@@ -108,6 +131,8 @@ def _lemmaization(token: list[str]) -> list[str]:
       lemmaized_token.append(lemmatizer.lemmatize(t[0], pos='a'))
     elif t[1].startswith('R'):
       lemmaized_token.append(lemmatizer.lemmatize(t[0], pos='r'))
-    else:
+    elif only_words_pattern.match(t[0]):
       lemmaized_token.append(lemmatizer.lemmatize(t[0]))
+    else:
+      lemmaized_token.append(t[0])
   return lemmaized_token
