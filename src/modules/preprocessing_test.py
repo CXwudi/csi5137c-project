@@ -1,4 +1,5 @@
 # run from the project root directory
+from functools import reduce
 import unittest
 from unittest import TestCase
 import pandas as pd
@@ -35,9 +36,11 @@ class TestTfIdf(TestCase):
       "comments": [["oh yeah, I love it", "it's so good"]]
     })
     print(example_dataset)
-    # preprocessed_dataset = proprocessing_text(example_dataset)
-    # print(preprocessed_dataset)
-
+    preprocessed_dataset = proprocessing_text(example_dataset)
+    print(preprocessed_dataset)
+    preprocessed_dataset["comments"] = preprocessed_dataset["comments"].apply(lambda x: reduce(lambda a, b: a + b, x, []))
+    print(preprocessed_dataset)
+    
 if __name__ == '__main__':
   print(__package__)
   unittest.main()
