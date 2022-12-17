@@ -46,7 +46,7 @@ english_stop_words = set(stopwords.words('english'))
 url_pattern = re.compile(r'https?://\S+|www\.\S+')
 import emoji
 from nltk.tokenize import RegexpTokenizer
-only_words_tokenizer = RegexpTokenizer(r"\w+")
+only_words_tokenizer = RegexpTokenizer(r"[a-z]+")
 
 
 def _core_preprocessing_and_tokenizing(text: str | float) -> list:

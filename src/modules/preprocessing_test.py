@@ -19,6 +19,7 @@ class TestTfIdf(TestCase):
     examples = [
       "Adobe Premiere youtuber starterpack.",
       float("nan"),
+      "we have important 5 and beautiful 3",
       "Monster of a weekly project done 🤷‍♀️",
       "[other] when the customer wants the color to be \"\"clearer\"\"",
       "IMPORTANT USER UPDATE - Adobe is Giving Away The Creative Cloud For Free Due to Corona Virus",
