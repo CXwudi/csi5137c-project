@@ -4,3 +4,5 @@ pandas
 pyspellchecker
 emoji
 praw
+scikit-learn
+imbalanced-learn
