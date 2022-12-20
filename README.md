@@ -2,6 +2,8 @@
 
 CSI5137C Project
 
+This GitHub link was not set to public until Decenber 19th 22:49 to avoid plagiarism issue.
+
 ## Prerequisites
 
 - Python 3+ (prefer 3.8+)
