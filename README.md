@@ -1,6 +1,6 @@
 # csi5137c-project
 
-CSI5137C Project
+CSI5137C Project by Charles Chen and Projna Saha
 
 This GitHub link was not set to public until Decenber 19th 22:49 to avoid plagiarism issue.
 
